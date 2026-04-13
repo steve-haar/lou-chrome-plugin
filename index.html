@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lou Barcode Label Generator — Chrome Extension</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #1a1a2e;
+      line-height: 1.6;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+      color: #fff;
+      text-align: center;
+      padding: 72px 24px 80px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 4px 16px;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: rgba(255,255,255,0.75);
+      max-width: 540px;
+      margin: 0 auto 36px;
+    }
+
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #4a90e2;
+      color: #fff;
+      text-decoration: none;
+      font-size: 17px;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 10px;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 4px 20px rgba(74,144,226,0.4);
+    }
+
+    .btn-download:hover { background: #357abd; transform: translateY(-1px); }
+    .btn-download:active { transform: translateY(0); }
+
+    .btn-download svg { flex-shrink: 0; }
+
+    .hero-note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+    }
+
+    /* Steps */
+    .steps-section {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+
+    .steps-section h2 {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 48px;
+      color: #1a1a2e;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .step {
+      display: flex;
+      gap: 24px;
+      position: relative;
+    }
+
+    /* Connecting line between steps */
+    .step:not(:last-child) .step-left::after {
+      content: "";
+      position: absolute;
+      top: 48px;
+      left: 23px;
+      width: 2px;
+      height: calc(100% + 0px);
+      background: #e0e6f0;
+    }
+
+    .step-left {
+      position: relative;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .step-num {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #4a90e2;
+      color: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 2px 12px rgba(74,144,226,0.35);
+    }
+
+    .step-right {
+      padding-bottom: 48px;
+      flex: 1;
+    }
+
+    .step:last-child .step-right { padding-bottom: 0; }
+
+    .step-right h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      margin-top: 10px;
+      color: #1a1a2e;
+    }
+
+    .step-right p {
+      font-size: 15px;
+      color: #555;
+      margin-bottom: 12px;
+    }
+
+    .step-right p strong { color: #1a1a2e; }
+
+    .code-pill {
+      display: inline-block;
+      background: #1a1a2e;
+      color: #7dd3fc;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 14px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      user-select: all;
+      cursor: text;
+    }
+
+    .screenshot {
+      margin-top: 14px;
+      border-radius: 10px;
+      border: 1px solid #dde3ef;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    }
+
+    .screenshot img {
+      width: 100%;
+      display: block;
+    }
+
+    .screenshot-placeholder {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #aab;
+      font-size: 14px;
+      background: #f8f9fb;
+    }
+
+    /* Features */
+    .features {
+      background: #fff;
+      border-top: 1px solid #e8ecf3;
+      border-bottom: 1px solid #e8ecf3;
+      padding: 56px 24px;
+    }
+
+    .features-inner {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .features h2 {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 36px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: #f5f7fa;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .feature-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .feature-card p  { font-size: 14px; color: #666; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 13px;
+      color: #999;
+    }
+
+    footer a { color: #4a90e2; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-badge">Free Chrome Extension</div>
+  <h1>Lou Barcode<br>Label Generator</h1>
+  <p>Print Avery barcode labels directly from your Lou inventory pages — no copy/paste, no extra software.</p>
+  <a class="btn-download" href="https://github.com/steve-haar/lou-chrome-plugin/archive/refs/heads/main.zip">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+      <path d="M12 3v13M7 11l5 5 5-5M3 21h18" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Download Extension
+  </a>
+  <div class="hero-note">Free &nbsp;·&nbsp; No account needed &nbsp;·&nbsp; Chrome only</div>
+</section>
+
+<section class="steps-section">
+  <h2>Install in 4 steps</h2>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">1</div>
+      </div>
+      <div class="step-right">
+        <h3>Download &amp; unzip</h3>
+        <p>Click <strong>Download Extension</strong> above. Once downloaded, find the <strong>.zip</strong> file in your Downloads folder and double-click it to unzip.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">2</div>
+      </div>
+      <div class="step-right">
+        <h3>Open Chrome Extensions</h3>
+        <p>In Chrome, navigate to:</p>
+        <span class="code-pill">chrome://extensions</span>
+        <p style="margin-top:10px">Then enable <strong>Developer mode</strong> using the toggle in the <strong>top-right corner</strong> of that page.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">3</div>
+      </div>
+      <div class="step-right">
+        <h3>Load the extension</h3>
+        <p>Click <strong>Load unpacked</strong> (top-left), then select the unzipped folder you downloaded in step 1.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-left">
+        <div class="step-num">4</div>
+      </div>
+      <div class="step-right">
+        <h3>You're done!</h3>
+        <p>Navigate to any SKU page in Lou. You'll see a new <strong>Print Label</strong> card alongside Edit SKU, Images, and the other buttons. Click it to generate and print your barcode label.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="features">
+  <div class="features-inner">
+    <h2>What it does</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">&#x2581;&#x2588;&#x2582;&#x2588;&#x2581;</div>
+        <h3>Code 128 Barcode</h3>
+        <p>Reads the UPC directly from the page and generates a scannable barcode automatically.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4B0;</div>
+        <h3>Price &amp; Description</h3>
+        <p>Pulls the retail price and product description so your label has everything you need.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F5A8;&#xFE0F;</div>
+        <h3>Avery Label Sheets</h3>
+        <p>Prints a full sheet sized for Avery 5160, 5161, 5163, 5164, 5168, or 5165 templates.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4BE;</div>
+        <h3>Remembers Your Settings</h3>
+        <p>Your last-used Avery template is saved so you don't have to re-select it every time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="https://github.com/steve-haar/lou-chrome-plugin">View source on GitHub</a>
+  &nbsp;·&nbsp;
+  For use with <a href="https://lou.evosus.com">Lou by Evosus</a>
+</footer>
+
+</body>
+</html>

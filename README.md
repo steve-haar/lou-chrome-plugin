@@ -1,5 +1,7 @@
 # Lou Barcode Label Generator
 
+### [&#x2B07; Click here to install](https://steve-haar.github.io/lou-chrome-plugin)
+
 A Chrome extension for [Lou by Evosus](https://lou.evosus.com) that adds a **Print Label** button to SKU profile pages. Click it to generate a scannable Code 128 barcode label and print it on Avery label sheets.
 
 ## Features
