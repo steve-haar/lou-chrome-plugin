@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lou Barcode Generator</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f0f0f0;
+      width: 420px;
+      padding: 12px;
+    }
+
+    #status {
+      font-size: 13px;
+      color: #888;
+      text-align: center;
+      padding: 12px 0;
+    }
+
+    /* The label card — white, matches the image style */
+    #label-card {
+      background: #fff;
+      padding: 24px 32px 20px;
+      display: none;
+    }
+
+    #description {
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #000;
+      margin-bottom: 10px;
+    }
+
+    #price-box {
+      display: inline-block;
+      border: 2px solid #000;
+      padding: 4px 20px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #000;
+      margin: 0 auto 14px;
+    }
+
+    #price-wrap {
+      text-align: center;
+    }
+
+    #barcode-wrap {
+      text-align: center;
+    }
+
+    #barcode-wrap svg {
+      max-width: 100%;
+    }
+
+    #upc-text {
+      text-align: center;
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: #000;
+      margin-top: 6px;
+      letter-spacing: 1px;
+    }
+
+    #error {
+      font-size: 12px;
+      color: #c0392b;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* Print button */
+    #actions {
+      text-align: center;
+      margin-top: 10px;
+      display: none;
+    }
+
+    #print-btn {
+      font-size: 13px;
+      padding: 6px 18px;
+      background: #4a90e2;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #print-btn:hover { background: #357abd; }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      #actions { display: none !important; }
+      #label-card { display: block !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="status">Scanning page...</div>
+
+  <div id="label-card">
+    <div id="description"></div>
+    <div id="price-wrap"><div id="price-box"></div></div>
+    <div id="barcode-wrap"><svg id="barcode"></svg></div>
+    <div id="upc-text"></div>
+  </div>
+
+  <div id="error"></div>
+  <div id="actions"><button id="print-btn">Print Label</button></div>
+
+  <script src="lib/JsBarcode.all.min.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
